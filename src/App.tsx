@@ -1,7 +1,12 @@
+import NavBar from "./components/navbar";
+import AppRouter from "./router/AppRouter";
+import { HashRouter } from "react-router-dom";
+
 export default function App() {
   return (
-    <div>
-      <h1>RockAuto Rebrand Prototype</h1>
-    </div>
+    <HashRouter>
+      <NavBar />
+      <AppRouter />
+    </HashRouter>
   );
 }
