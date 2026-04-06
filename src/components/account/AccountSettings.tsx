@@ -19,8 +19,6 @@ export function AccountSettings({
 }: Props) {
   return (
     <>
-      <h2 className="sectionTitle">Account Settings</h2>
-
       <div className="card">
         <div className="cardRow" onClick={onPasswordClick}>
           <span className="cardLabel">Change Password</span>

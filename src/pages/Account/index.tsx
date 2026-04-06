@@ -67,8 +67,9 @@ export default function AccountPage() {
   };
 
   return (
-      <div className="page">
+      <div className="account-page">
         <main className="main">
+          <h2 className="sectionTitle">Account Settings</h2>
           <AccountSettings
               newsletter={newsletter}
               setNewsletter={setNewsletter}

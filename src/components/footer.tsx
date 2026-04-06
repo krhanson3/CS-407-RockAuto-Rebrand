@@ -30,7 +30,6 @@ export default function Footer() {
       <div className="footerCol">
         <h3 className="footerTitle">Learn more</h3>
         <p className="footerText">Blog</p>
-        <p className="footerText">Case studies</p>
         <p className="footerText">Customer stories</p>
         <p className="footerText">Best practices</p>
       </div>
