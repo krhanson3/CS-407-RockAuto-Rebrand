@@ -1,7 +1,6 @@
 /* Page */
 .page {
-  font-family: 'Arial', 'Helvetica Neue', sans-serif;
-  background: #ffffff;
+  background: #e8eafc;
   min-height: 100vh;
   color: #000;
 }
@@ -30,40 +29,7 @@
   letter-spacing: -0.5px;
 }
 
-/* Home Button */
-.homeBtn {
-  background: #222;
-  color: #fff;
-  text-decoration: none;
-  padding: 6px 14px;
-  font-weight: 700;
-  font-size: 14px;
-  border: 1px solid #000;
-  cursor: pointer;
-}
 
-/* Navigation */
-.nav {
-  display: flex;
-  gap: 24px;
-}
-
-.navLink {
-  color: #000;
-  text-decoration: none;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.navLinkActive {
-  color: #000;
-  text-decoration: underline;
-  font-weight: 700;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-/* Main */
 .main {
   max-width: 680px;
   padding: 40px 32px 60px;
@@ -79,7 +45,7 @@
 
 /* Card */
 .card {
-  background: #888;
+  background: #665ba2;
   border-radius: 0;
   padding: 16px 20px;
   margin-bottom: 8px;
