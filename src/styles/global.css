@@ -16,3 +16,7 @@ html, body {
 .page > *:last-child {
   margin-top: auto;
 }
+
+.main {
+  background: #e8eafc;
+}
