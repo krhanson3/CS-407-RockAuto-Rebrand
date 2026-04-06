@@ -1,9 +1,7 @@
-
-
 export default function Home() {
   return (
-    <div style={{ padding: "32px", fontFamily: "Arial, sans-serif" }}>
-      <h1>Home</h1>
+    <div>
+      <h1 className="slogan">ALL THE PARTS YOUR CAR WILL EVER NEED</h1>
       
     </div>
   );

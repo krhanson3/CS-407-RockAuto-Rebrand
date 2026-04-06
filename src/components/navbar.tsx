@@ -14,15 +14,14 @@ export default function NavBar() {
         </Link>
       </div>
 
-      {/* Desktop Links */}
       <div className="navbar-right desktop-links">
         <ul className="nav-links">
-          <li><Link to="/account">Account</Link></li>
+          <li><Link to="/search">Search</Link></li>
           <li><Link to="/cart">Cart</Link></li>
+          <li><Link to="/account">Account</Link></li>
         </ul>
       </div>
 
-      {/* Mobile Hamburger */}
       <button
         className="hamburger"
         onClick={() => setMenuOpen(!menuOpen)}

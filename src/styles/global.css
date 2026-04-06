@@ -7,6 +7,16 @@ html, body {
   font-weight: bold;
 }
 
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page > *:last-child {
+  margin-top: auto;
+}
+
 .main {
   background: #e8eafc;
 }
