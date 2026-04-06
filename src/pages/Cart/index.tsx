@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import "../../styles/global.css"
 import "../../styles/cartPage.css";
 
 /* ── Inline SVG icons ── */
@@ -41,9 +42,9 @@ interface CartItem {
 }
 
 const initialItems: CartItem[] = [
-  { id: 1, name: "Ceramic Brake Pad Set", brand: "Cortinate", partNumber: "PART#02", price: 45.99, qty: 1 },
-  { id: 2, name: "Oil Filter Premium", brand: "Cortinate", partNumber: "PART#03", price: 23.99, qty: 1 },
-  { id: 3, name: "Spark Plug Iridium", brand: "Cortinate", partNumber: "PART#02", price: 10.99, qty: 1 },
+  { id: 1, name: "Ceramic Disc Brake Pad Set", brand: "GM", partNumber: "19428008", price: 45.99, qty: 1 },
+  { id: 2, name: "Engine Oil Filter", brand: "A-Premium", partNumber: "APEOF042", price: 23.99, qty: 1 },
+  { id: 3, name: "Iridium Spark Plug", brand: "Denso", partNumber: "3273", price: 10.99, qty: 1 },
 ];
 
 export default function Cart() {
@@ -113,9 +114,7 @@ export default function Cart() {
                     <tr key={item.id}>
                       <td>
                         <div className="cart-product-cell">
-                          <div className="cart-product-thumb">
-                            <PackageIcon />
-                          </div>
+                         
                           <div className="cart-product-info">
                             <div className="product-name">{item.name}</div>
                             <div className="product-brand">{item.brand}</div>
@@ -204,11 +203,7 @@ export default function Cart() {
                 Proceed to Checkout
               </button>
 
-              <div className="cart-paypal-divider">or</div>
-
-              <button className="cart-paypal-btn" id="paypal-btn">
-                Pay with <span className="cart-paypal-label">PayPal</span>
-              </button>
+              
             </div>
           </div>
         </div>

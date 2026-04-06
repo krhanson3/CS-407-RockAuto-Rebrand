@@ -1,17 +1,10 @@
-/* ═══════════════════════════════════════════════════
-   CART PAGE — Premium Styling
-   ═══════════════════════════════════════════════════ */
-
-/* --- Page Container --- */
 .cart-page {
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #f0f2ff 0%, #e8eafc 40%, #f5f0ff 100%);
+  background: #e8eafc;
   min-height: 100vh;
   padding: 28px 32px 60px;
   color: #1a1a2e;
 }
 
-/* --- Breadcrumb --- */
 .cart-breadcrumb {
   font-size: 13px;
   color: #6c6c8a;
@@ -38,7 +31,6 @@
   font-size: 11px;
 }
 
-/* --- Page Title --- */
 .cart-title {
   font-size: 28px;
   font-weight: 800;
@@ -52,7 +44,6 @@
   font-weight: 700;
 }
 
-/* --- Main Layout (table + summary side by side) --- */
 .cart-layout {
   display: flex;
   gap: 28px;
