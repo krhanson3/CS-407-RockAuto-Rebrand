@@ -1,20 +1,24 @@
-import type { Vehicle } from "../../types/account";
+import type { Vehicle } from "../../types/types";
 
 type Props = {
   vehicles: Vehicle[];
-  deleteVehicle: (id: number) => void;
+  deleteVehicle: (index: number) => void;
   onAddClick: () => void;
 };
 
 export function VehicleList({ vehicles, deleteVehicle, onAddClick }: Props) {
   return (
     <div className="card">
-      {vehicles.map((v) => (
-        <div key={v.id} className="vehicleBlock">
-          <span className="vehicleLabel">{v.label}</span>
-          <button className="deleteBtn" onClick={() => deleteVehicle(v.id)}>
+      {vehicles.map((v, index) => (
+        <div key={index} className="vehicleBlock">
+          <span className="vehicleLabel">
+            {v.year} {v.make} {v.model} — {v.engine}
+          </span>
+
+          <button className="deleteBtn" onClick={() => deleteVehicle(index)}>
             Delete
           </button>
+
           <div className="separator" />
         </div>
       ))}

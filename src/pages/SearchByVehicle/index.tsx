@@ -1,33 +1,22 @@
 import { useState } from "react";
+import { vehicleOptions } from "../../data/vehicle";
+import { searchCategories } from "../../data/searchCategories";
+import { products } from "../../data/parts";
 
 import "../../styles/global.css";
 import "../../styles/searchPage.css";
-import tricoWiper from "../../images/TRICO_wiper.jpg";
-import ancoWiper from "../../images/ANCO_wiper.jpg";
+import tricoWiper from "../../images/parts/TRICO_wiper.jpg";
+import ancoWiper from "../../images/parts/ANCO_wiper.jpg";
+import boschWiper from "../../images/parts/bosch_wiper.png"
+import rainxWiper from "../../images/parts/rainx_wiper.png"
+import Breadcrumb from "../../components/breadcrumb";
 
-const categories = [
-  "Belt Drive",
-  "Body & Lamp Assembly",
-  "Brake & Wheel Hub",
-  "Cooling System",
-  "Drivetrain",
-  "Electrical",
-  "Electrical-Bulb & Socket",
-  "Electrical-Connector",
-  "Electrical-Switch & Relay",
-  "Engine",
-  "Exhaust & Emission",
-  "Fuel & Air",
-  "Heat & Air Conditioning",
-  "Ignition",
-  "Interior",
-  "Literature",
-  "Steering",
-  "Suspension",
-  "Transmission-Automatic",
-  "Wheel",
-  "Wiper & Washer",
-];
+const productImages: Record<string, string> = {
+  tricoWiper,
+  ancoWiper,
+  boschWiper,
+  rainxWiper,
+};
 
 export default function Search() {
   const [make, setMake] = useState("none");
@@ -36,42 +25,49 @@ export default function Search() {
   const [engine, setEngine] = useState("none");
   const [showResults, setShowResults] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+ 
+  const makes = [...new Set(vehicleOptions.map(v => v.make))];
+
+  const models = make !== "none"
+    ? [...new Set(vehicleOptions.filter(v => v.make === make).map(v => v.model))]: [];
+
+  const years = model !== "none"
+    ? [...new Set(vehicleOptions.filter(v => v.make === make && v.model === model).map(v => v.year))]: [];
+
+  const engines = year !== "none"
+    ? [...new Set(vehicleOptions.filter(v => v.make === make && v.model === model && v.year === year).map(v => v.engine))]: [];
 
   const handleSearch = () => {
-    const matches =
-      make === "Hyundai" &&
-      model === "Sonata" &&
-      year === "2020" &&
-      engine === "2.0L L4 Electric/Gas";
-    setShowResults(matches);
-    setSelectedCategory(null);
-  };
+  const match = vehicleOptions.some(v =>
+    v.make === make &&
+    v.model === model &&
+    v.year === year &&
+    v.engine === engine
+  );
+
+  setShowResults(match);
+  setSelectedCategory(null);
+};
+
 
   return (
     <div className="search-page">
       <h1 className="search-title">
         <span className="search-title-line">ALL THE PARTS YOUR</span>
         <span className="search-title-line">CAR WILL EVER NEED</span>
+        
       </h1>
 
       <main className={`search-main${showResults ? " search-main--results" : ""}`}>
+        <Breadcrumb />
         {showResults ? (
           <section className="search-results">
-            <button
-              className="search-back-btn"
-              type="button"
-              onClick={() => {
-                setShowResults(false);
-                setSelectedCategory(null);
-              }}
-            >
-              ← Back to Search
-            </button>
+            
 
             <aside className="search-filter-card">
               <h2 className="search-filter-title">Filter by Category</h2>
               <ul className="search-filter-list">
-                {categories.map((category) => (
+                {searchCategories.map((category) => (
                   <li key={category}>
                     <button
                       className={`search-filter-btn${
@@ -87,42 +83,13 @@ export default function Search() {
               </ul>
             </aside>
 
-            <div
-              className={`search-results-placeholder${
-                selectedCategory === "Wiper & Washer" ? " has-products" : ""
-              }`}
-            >
-              {selectedCategory === "Wiper & Washer" ? (
-                <div className="search-products">
-                  <article className="search-product-card">
-                    <img src={tricoWiper} alt="TRICO 31180 wiper blade" />
-                    <div className="search-product-info">
-                      <h3>TRICO 31180 View; Conventional Front Right</h3>
-                      <p className="search-product-price">$1.79</p>
-                      <button type="button" className="search-add-btn">
-                        Add to Cart
-                      </button>
-                    </div>
-                  </article>
+           <PartsResults results={products[selectedCategory] || []} />
 
-                  <article className="search-product-card">
-                    <img src={ancoWiper} alt="ANCO 3118 31-Series wiper blade" />
-                    <div className="search-product-info">
-                      <h3>ANCO 3118 31-Series; Conventional Front Right</h3>
-                      <p className="search-product-price">$2.46</p>
-                      <button type="button" className="search-add-btn">
-                        Add to Cart
-                      </button>
-                    </div>
-                  </article>
-                </div>
-              ) : (
-                <p>Parts will appear here when a category is selected</p>
-              )}
-            </div>
           </section>
         ) : (
+          
           <div className="search-card">
+            <Breadcrumb />
             <div className="search-grid">
               <div className="search-input-group">
                 <label htmlFor="search-make">Make</label>
@@ -130,10 +97,17 @@ export default function Search() {
                   id="search-make"
                   className="search-select"
                   value={make}
-                  onChange={(e) => setMake(e.target.value)}
+                  onChange={(e) => {
+                    setMake(e.target.value);
+                    setModel("none");
+                    setYear("none");
+                    setEngine("none");
+                  }}
                 >
                   <option value="none">None</option>
-                  <option>Hyundai</option>
+                  {makes.map((m) => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
                 </select>
               </div>
 
@@ -143,10 +117,17 @@ export default function Search() {
                   id="search-model"
                   className="search-select"
                   value={model}
-                  onChange={(e) => setModel(e.target.value)}
+                  onChange={(e) => {
+                    setModel(e.target.value);
+                    setYear("none");
+                    setEngine("none");
+                  }}
+                  disabled={make === "none"}
                 >
                   <option value="none">None</option>
-                  <option>Sonata</option>
+                  {models.map((m) => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
                 </select>
               </div>
 
@@ -156,10 +137,16 @@ export default function Search() {
                   id="search-year"
                   className="search-select"
                   value={year}
-                  onChange={(e) => setYear(e.target.value)}
+                  onChange={(e) => {
+                    setYear(e.target.value);
+                    setEngine("none");
+                  }}
+                  disabled={model === "none"}
                 >
                   <option value="none">None</option>
-                  <option>2020</option>
+                  {years.map((y) => (
+                    <option key={y} value={y}>{y}</option>
+                  ))}
                 </select>
               </div>
 
@@ -170,11 +157,15 @@ export default function Search() {
                   className="search-select"
                   value={engine}
                   onChange={(e) => setEngine(e.target.value)}
+                  disabled={year === "none"}
                 >
                   <option value="none">None</option>
-                  <option>2.0L L4 Electric/Gas</option>
+                  {engines.map((e) => (
+                    <option key={e} value={e}>{e}</option>
+                  ))}
                 </select>
               </div>
+
             </div>
 
             <button className="search-parts-btn" type="button" onClick={handleSearch}>
