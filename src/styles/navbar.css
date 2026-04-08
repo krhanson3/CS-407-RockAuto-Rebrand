@@ -140,3 +140,8 @@
     display: flex;
   }
 }
+
+.nav-cart-icon {
+  width: 18px;
+  height: 18px;
+}
