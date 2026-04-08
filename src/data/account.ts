@@ -1,14 +1,21 @@
 import type { Address, Vehicle } from "../types/types";
 
 export const initialAddresses: Address[] = [
-  { name: "Raheem Crayton",
-    line1: "1959 Awesome Lane",
-    line2: "Foosha Village, Dawn Island 3786",
+  {
+    id: 1,
+    name: "Home",
+    line1: "123 Main Street",
+    line2: "Apt 4B",
+    city: "Springfield",
+    state: "IL",
+    zip: "62704"
   },
 ];
 
+
 export const initialVehicles: Vehicle[] = [
-  { make: "Honda",
+  { id: 1, 
+    make: "Honda",
     model: "Accord",
     year: "2021",
     engine: "2.0L L4 Turbo",

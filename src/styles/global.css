@@ -13,6 +13,10 @@ html, body {
   flex-direction: column;
 }
 
+.page > *:first-child {
+  flex: 1;
+}
+
 .page > *:last-child {
   margin-top: auto;
 }

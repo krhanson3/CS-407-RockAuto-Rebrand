@@ -2,22 +2,29 @@ import type { Vehicle } from "../../types/types";
 
 type Props = {
   vehicles: Vehicle[];
-  deleteVehicle: (index: number) => void;
+  deleteVehicle: (id: number) => void;
   onAddClick: () => void;
+  onEditClick: (vehicle: Vehicle) => void;
 };
 
-export function VehicleList({ vehicles, deleteVehicle, onAddClick }: Props) {
+export function VehicleList({ vehicles, deleteVehicle, onAddClick, onEditClick }: Props) {
   return (
     <div className="card">
-      {vehicles.map((v, index) => (
-        <div key={index} className="vehicleBlock">
+      {vehicles.map((v) => (
+        <div key={v.id} className="vehicleBlock">
           <span className="vehicleLabel">
             {v.year} {v.make} {v.model} — {v.engine}
           </span>
 
-          <button className="deleteBtn" onClick={() => deleteVehicle(index)}>
-            Delete
-          </button>
+          <div className="vehicleActions">
+            <button className="editBtn" onClick={() => onEditClick(v)}>
+              Edit
+            </button>
+
+            <button className="deleteBtn" onClick={() => deleteVehicle(v.id)}>
+              Delete
+            </button>
+          </div>
 
           <div className="separator" />
         </div>

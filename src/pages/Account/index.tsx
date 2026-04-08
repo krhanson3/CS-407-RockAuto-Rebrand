@@ -5,83 +5,113 @@ import "../../styles/accountPage.css";
 
 import type { Address, Vehicle } from "../../types/types";
 
-import { initialAddresses, initialVehicles } from "../../data/account";
-
 import { ChangePasswordModal } from "../../components/account/ChangePasswordModal";
 import { ChangeEmailModal } from "../../components/account/ChangeEmailModal";
 import { AddAddressModal } from "../../components/account/AddAddressModal";
 import { AddVehicleModal } from "../../components/account/AddVehicleModal";
+import { EditVehicleModal } from "../../components/account/EditVehicleModal";
 
 import { AddressList } from "../../components/account/AddressList";
 import { VehicleList } from "../../components/account/VehicleList";
 import { AccountSettings } from "../../components/account/AccountSettings";
 
-export default function AccountPage() {
-  const [addresses, setAddresses] = useState<Address[]>(initialAddresses);
-  const [vehicles, setVehicles] = useState<Vehicle[]>(initialVehicles);
+import { useSavedVehicles } from "../../data/SavedVehiclesContext";
+import { useSavedAddresses } from "../../data/SavedAddressContext";
 
-  const [newsletter, setNewsletter] = useState("yes");
-  const [language, setLanguage] = useState("English");
+export default function AccountPage() {
+  const { savedVehicles, addVehicle, removeVehicle, updateVehicle } = useSavedVehicles();
+  const { savedAddresses, addAddress, updateAddress, removeAddress } = useSavedAddresses();
+
+  const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
+  const [vehicleForm, setVehicleForm] = useState({
+    year: "",
+    make: "",
+    model: "",
+    engine: ""
+  });
+
+  const startEditVehicle = (v: Vehicle) => {
+    setEditingVehicle(v);
+    setVehicleForm({
+      year: v.year,
+      make: v.make,
+      model: v.model,
+      engine: v.engine
+    });
+  };
+
+  const saveVehicleEdit = () => {
+    if (!editingVehicle) return;
+    updateVehicle(editingVehicle.id, vehicleForm);
+    setEditingVehicle(null);
+  };
+
+  const handleAddVehicle = () => {
+    if (!vehicleForm.make.trim() || !vehicleForm.model.trim()) return;
+
+    addVehicle({
+      year: vehicleForm.year,
+      make: vehicleForm.make,
+      model: vehicleForm.model,
+      engine: vehicleForm.engine,
+    });
+
+    setVehicleForm({ year: "", make: "", model: "", engine: "" });
+    setShowAddVehicle(false);
+  };
+
+  const handleDeleteVehicle = (id: number) => {
+    removeVehicle(id);
+  };
 
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editForm, setEditForm] = useState({ name: "", line1: "", line2: "" });
 
-  // Modal states
+  const [newAddress, setNewAddress] = useState({
+  name: "",
+  line1: "",
+  line2: ""
+});
+
+  
+  const startEditAddress = (addr: Address, index: number) => {
+    setEditingIndex(index);
+    setEditForm({
+      name: addr.name,
+      line1: addr.line1,
+      line2: addr.line2
+    });
+  };
+
+  const saveAddressEdit = () => {
+    if (editingIndex === null) return;
+
+    const id = savedAddresses[editingIndex].id;
+    updateAddress(id, editForm);
+
+    setEditingIndex(null);
+  };
+
+  const handleAddAddress = (newAddress: Omit<Address, "id">) => {
+    if (!newAddress.name.trim()) return;
+    addAddress(newAddress);
+    setShowAddAddress(false);
+  };
+
+  const handleDeleteAddress = (id: number) => {
+    removeAddress(id);
+  };
+
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [showAddVehicle, setShowAddVehicle] = useState(false);
 
-  const [newAddress, setNewAddress] = useState({ name: "", line1: "", line2: "" });
-  const [newVehicle, setNewVehicle] = useState({ year: "", make: "", model: "", engine: "" });
-
   const [passwordForm, setPasswordForm] = useState({ current: "", new1: "", new2: "" });
   const [emailForm, setEmailForm] = useState({ current: "", new1: "" });
 
-  // Start editing an address
-  const startEdit = (addr: Address, index: number) => {
-    setEditingIndex(index);
-    setEditForm({ name: addr.name, line1: addr.line1, line2: addr.line2 });
-  };
-
-  // Save edited address
-  const saveEdit = () => {
-    if (editingIndex === null) return;
-
-    const updated = [...addresses];
-    updated[editingIndex] = { ...updated[editingIndex], ...editForm };
-
-    setAddresses(updated);
-    setEditingIndex(null);
-  };
-
-  // Delete address by index
-  const deleteAddress = (index: number) => {
-    setAddresses(addresses.filter((_, i) => i !== index));
-  };
-
-  // Delete vehicle by index
-  const deleteVehicle = (index: number) => {
-    setVehicles(vehicles.filter((_, i) => i !== index));
-  };
-
-  // Add new address
-  const addAddress = () => {
-    if (!newAddress.name.trim()) return;
-
-    setAddresses([...addresses, { ...newAddress }]);
-    setNewAddress({ name: "", line1: "", line2: "" });
-    setShowAddAddress(false);
-  };
-
-  // Add new vehicle
-  const addVehicle = () => {
-    if (!newVehicle.make.trim() || !newVehicle.model.trim()) return;
-
-    setVehicles([...vehicles, { ...newVehicle }]);
-    setNewVehicle({ year: "", make: "", model: "", engine: "" });
-    setShowAddVehicle(false);
-  };
+  const [newsletter, setNewsletter] = useState("yes");
+  const [language, setLanguage] = useState("English");
 
   return (
     <div className="account-page">
@@ -98,22 +128,24 @@ export default function AccountPage() {
 
         <h2 className="sectionTitle">Saved Addresses</h2>
         <AddressList
-          addresses={addresses}
+          addresses={savedAddresses}
           editingIndex={editingIndex}
           editForm={editForm}
           setEditForm={setEditForm}
-          startEdit={startEdit}
-          saveEdit={saveEdit}
+          startEdit={startEditAddress}
+          saveEdit={saveAddressEdit}
           cancelEdit={() => setEditingIndex(null)}
-          deleteAddress={deleteAddress}
+          deleteAddress={handleDeleteAddress}
           onAddClick={() => setShowAddAddress(true)}
         />
 
+        
         <h2 className="sectionTitle">Saved Vehicles</h2>
         <VehicleList
-          vehicles={vehicles}
-          deleteVehicle={deleteVehicle}
+          vehicles={savedVehicles}
+          deleteVehicle={handleDeleteVehicle}
           onAddClick={() => setShowAddVehicle(true)}
+          onEditClick={startEditVehicle}
         />
       </main>
 
@@ -138,15 +170,24 @@ export default function AccountPage() {
         onClose={() => setShowAddAddress(false)}
         form={newAddress}
         setForm={setNewAddress}
-        onAdd={addAddress}
+        onAdd={handleAddAddress}
       />
+
 
       <AddVehicleModal
         show={showAddVehicle}
         onClose={() => setShowAddVehicle(false)}
-        form={newVehicle}
-        setForm={setNewVehicle}
-        onAdd={addVehicle}
+        form={vehicleForm}
+        setForm={setVehicleForm}
+        onAdd={handleAddVehicle}
+      />
+
+      <EditVehicleModal
+        show={!!editingVehicle}
+        onClose={() => setEditingVehicle(null)}
+        form={vehicleForm}
+        setForm={setVehicleForm}
+        onSave={saveVehicleEdit}
       />
     </div>
   );

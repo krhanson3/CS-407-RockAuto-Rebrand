@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../../styles/global.css";
 import "../../styles/cartPage.css";
 import { useCart } from "../../data/CartContext";
+import { useSavedAddresses } from "../../data/SavedAddressContext";
+import Breadcrumb from "../../components/breadcrumb";
 
 /* ── Inline SVG icons ── */
 const CartIcon = () => (
@@ -36,23 +39,42 @@ const toPriceNumber = (price: string): number => {
 
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity } = useCart();
-
+  const { savedAddresses } = useSavedAddresses();
   // Convert price strings → numbers
   const subtotal = cart.reduce((sum, i) => sum + toPriceNumber(i.price) * i.quantity,0);
   const shipping = cart.length > 0 ? 8.99 : 0;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
 
+  const [shippingForm, setShippingForm] = useState({
+  first: "",
+  last: "",
+  address: "",
+  city: "",
+  state: "",
+  zip: ""
+});
+
+  
+  const handleSelectSavedAddress = (id: string) => {
+    const addr = savedAddresses.find(a => a.id === Number(id));
+    if (!addr) return;
+
+    setShippingForm({
+      first: addr.name.split(" ")[0] || "",
+      last: addr.name.split(" ")[1] || "",
+      address: addr.line1,
+      city: addr.city,
+      state: addr.state,
+      zip: addr.zip
+    });
+  };
+
+
   return (
     <div className="cart-page">
-      {/* Breadcrumb */}
-      <div className="cart-breadcrumb">
-        <Link to="/">Home</Link>
-        <span className="breadcrumb-sep">›</span>
-        <span>Shopping Cart</span>
-      </div>
+      <Breadcrumb />
 
-      {/* Page Title */}
       <h1 className="cart-title">
         Your Shopping Cart{" "}
         <span className="cart-count">
@@ -190,7 +212,6 @@ export default function Cart() {
         </div>
       )}
 
-      {/* ── Shipping Information ── */}
       {cart.length > 0 && (
         <div className="cart-shipping-card">
           <h2 className="cart-shipping-title">
@@ -198,52 +219,112 @@ export default function Cart() {
             Shipping Information
           </h2>
 
-          <div className="cart-shipping-grid">
-            <div className="cart-input-group">
-              <label htmlFor="ship-first">First Name</label>
-              <input id="ship-first" className="cart-input" type="text" placeholder="John" />
-            </div>
-
-            <div className="cart-input-group">
-              <label htmlFor="ship-last">Last Name</label>
-              <input id="ship-last" className="cart-input" type="text" placeholder="Doe" />
-            </div>
-
-            <div className="cart-input-group full-width">
-              <label htmlFor="ship-address">Address</label>
-              <input id="ship-address" className="cart-input" type="text" placeholder="123 Main Street" />
-            </div>
-
-            <div className="cart-input-group">
-              <label htmlFor="ship-city">City</label>
-              <input id="ship-city" className="cart-input" type="text" placeholder="Springfield" />
-            </div>
-
-            <div className="cart-input-group">
-              <label htmlFor="ship-state">State</label>
-              <select id="ship-state" className="cart-select" defaultValue="">
-                <option value="" disabled>Select…</option>
-                <option>AL</option><option>AK</option><option>AZ</option><option>AR</option>
-                <option>CA</option><option>CO</option><option>CT</option><option>DE</option>
-                <option>FL</option><option>GA</option><option>HI</option><option>ID</option>
-                <option>IL</option><option>IN</option><option>IA</option><option>KS</option>
-                <option>KY</option><option>LA</option><option>ME</option><option>MD</option>
-                <option>MA</option><option>MI</option><option>MN</option><option>MS</option>
-                <option>MO</option><option>MT</option><option>NE</option><option>NV</option>
-                <option>NH</option><option>NJ</option><option>NM</option><option>NY</option>
-                <option>NC</option><option>ND</option><option>OH</option><option>OK</option>
-                <option>OR</option><option>PA</option><option>RI</option><option>SC</option>
-                <option>SD</option><option>TN</option><option>TX</option><option>UT</option>
-                <option>VT</option><option>VA</option><option>WA</option><option>WV</option>
-                <option>WI</option><option>WY</option>
-              </select>
-            </div>
-
-            <div className="cart-input-group">
-              <label htmlFor="ship-zip">ZIP Code</label>
-              <input id="ship-zip" className="cart-input" type="text" placeholder="62704" />
-            </div>
+        {savedAddresses.length > 0 && (
+          <div className="cart-input-group full-width">
+            <label>Saved Address</label>
+            <select
+              className="cart-select"
+              defaultValue=""
+              onChange={(e) => handleSelectSavedAddress(e.target.value)}
+            >
+              <option value="" disabled>Select a saved address…</option>
+              {savedAddresses.map(addr => (
+                <option key={addr.id} value={addr.id}>
+                  {addr.name} — {addr.line1}
+                </option>
+              ))}
+            </select>
           </div>
+        )}
+
+
+          <div className="cart-shipping-grid">
+  <div className="cart-input-group">
+    <label htmlFor="ship-first">First Name</label>
+    <input
+      id="ship-first"
+      className="cart-input"
+      type="text"
+      value={shippingForm.first}
+      onChange={(e) => setShippingForm({ ...shippingForm, first: e.target.value })}
+      placeholder="John"
+    />
+  </div>
+
+  <div className="cart-input-group">
+    <label htmlFor="ship-last">Last Name</label>
+    <input
+      id="ship-last"
+      className="cart-input"
+      type="text"
+      value={shippingForm.last}
+      onChange={(e) => setShippingForm({ ...shippingForm, last: e.target.value })}
+      placeholder="Doe"
+    />
+  </div>
+
+  <div className="cart-input-group full-width">
+    <label htmlFor="ship-address">Address</label>
+    <input
+      id="ship-address"
+      className="cart-input"
+      type="text"
+      value={shippingForm.address}
+      onChange={(e) => setShippingForm({ ...shippingForm, address: e.target.value })}
+      placeholder="123 Main Street"
+    />
+  </div>
+
+  <div className="cart-input-group">
+    <label htmlFor="ship-city">City</label>
+    <input
+      id="ship-city"
+      className="cart-input"
+      type="text"
+      value={shippingForm.city}
+      onChange={(e) => setShippingForm({ ...shippingForm, city: e.target.value })}
+      placeholder="Springfield"
+    />
+  </div>
+
+  <div className="cart-input-group">
+    <label htmlFor="ship-state">State</label>
+    <select
+      id="ship-state"
+      className="cart-select"
+      value={shippingForm.state}
+      onChange={(e) => setShippingForm({ ...shippingForm, state: e.target.value })}
+    >
+      <option value="" disabled>Select…</option>
+      <option>AL</option><option>AK</option><option>AZ</option><option>AR</option>
+      <option>CA</option><option>CO</option><option>CT</option><option>DE</option>
+      <option>FL</option><option>GA</option><option>HI</option><option>ID</option>
+      <option>IL</option><option>IN</option><option>IA</option><option>KS</option>
+      <option>KY</option><option>LA</option><option>ME</option><option>MD</option>
+      <option>MA</option><option>MI</option><option>MN</option><option>MS</option>
+      <option>MO</option><option>MT</option><option>NE</option><option>NV</option>
+      <option>NH</option><option>NJ</option><option>NM</option><option>NY</option>
+      <option>NC</option><option>ND</option><option>OH</option><option>OK</option>
+      <option>OR</option><option>PA</option><option>RI</option><option>SC</option>
+      <option>SD</option><option>TN</option><option>TX</option><option>UT</option>
+      <option>VT</option><option>VA</option><option>WA</option><option>WV</option>
+      <option>WI</option><option>WY</option>
+    </select>
+  </div>
+
+  <div className="cart-input-group">
+    <label htmlFor="ship-zip">ZIP Code</label>
+    <input
+      id="ship-zip"
+      className="cart-input"
+      type="text"
+      value={shippingForm.zip}
+      onChange={(e) => setShippingForm({ ...shippingForm, zip: e.target.value })}
+      placeholder="62704"
+    />
+  </div>
+</div>
+
 
           <label className="cart-save-address">
             <input type="checkbox" /> Save this address for future orders
