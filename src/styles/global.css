@@ -13,10 +13,36 @@ html, body {
   flex-direction: column;
 }
 
+.page > *:first-child {
+  flex: 1;
+}
+
 .page > *:last-child {
   margin-top: auto;
 }
 
 .main {
   padding-bottom: 60px;
+}
+.breadcrumb {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.crumb-link {
+  color: #0074d9;
+  text-decoration: none;
+}
+
+.crumb-link:hover {
+  text-decoration: underline;
+}
+
+.crumb-current {
+  color: #666;
+}
+
+.crumb-separator {
+  margin: 0 4px;
+  color: #aaa;
 }

@@ -1,19 +1,113 @@
-/* Page wrapper */
-.homePage {
-  background: #fff;
+/* Page background + layout */
+.home-page {
+  background: #e8eafc;
   min-height: 100vh;
+  padding: 32px;
+  color: #1a1a2e;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
 }
 
-
-.slogan {
+.home-main {
+  max-width: 600px;
+  width: 100%;
   text-align: center;
-  padding: 140px 20px 100px;
+}
+
+/* Title styling (matches search-title) */
+.home-title {
   font-size: 48px;
   font-weight: 900;
-  max-width: 700px;
-  color: #665ba2;
-  margin: 0 auto 40px;
-  line-height: 1.1;
+  margin: 6px 0 34px;
+  padding-bottom: 100px;
+  color: #1a1a2e;
+  letter-spacing: -0.5px;
+  line-height: 1.05;
+}
+
+.home-title-line {
+  display: block;
+}
+
+/* Card container (matches search-card) */
+.home-card {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow:
+    0 4px 24px rgba(99, 102, 241, 0.07),
+    0 1.5px 6px rgba(0, 0, 0, 0.04);
+  animation: homeFadeIn 0.4s ease-out both;
+}
+
+/* Buttons container */
+.home-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Buttons (match search-parts-btn style) */
+.home-btn {
+  width: 100%;
+  padding: 14px 24px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.3px;
+  border: none;
+}
+
+/* Primary button */
+.home-btn.primary {
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+}
+
+.home-btn.primary:hover {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+  transform: translateY(-1px);
+}
+
+/* Secondary button */
+.home-btn.secondary {
+  background: rgba(255, 255, 255, 0.8);
+  color: #1a1a2e;
+  border: 1.5px solid rgba(99, 102, 241, 0.25);
+}
+
+.home-btn.secondary:hover {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Fade animation */
+@keyframes homeFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 700px) {
+  .home-title {
+    font-size: 34px;
+  }
+
+  .home-page {
+    padding: 20px 16px 48px;
+  }
 }

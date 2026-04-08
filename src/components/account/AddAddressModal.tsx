@@ -1,5 +1,6 @@
 // src/components/modals/AddAddressModal.tsx
 import React from "react";
+import type { Address } from "../../types/types";
 
 type Props = {
   show: boolean;
@@ -8,11 +9,32 @@ type Props = {
   setForm: React.Dispatch<
     React.SetStateAction<{ name: string; line1: string; line2: string }>
   >;
-  onAdd: () => void;
+  onAdd: (addr: Omit<Address, "id">) => void;
 };
 
 export function AddAddressModal({ show, onClose, form, setForm, onAdd }: Props) {
   if (!show) return null;
+
+  const handleAdd = () => {
+    // Expecting "City, ST 12345"
+    const [cityPart, stateZipPart] = form.line2.split(",");
+    const city = cityPart?.trim() || "";
+
+    const [state, zip] = stateZipPart
+      ? stateZipPart.trim().split(" ")
+      : ["", ""];
+
+    onAdd({
+      name: form.name,
+      line1: form.line1,
+      line2: form.line2,
+      city,
+      state,
+      zip
+    });
+
+    onClose();
+  };
 
   return (
     <div className="overlay" onClick={onClose}>
@@ -41,7 +63,7 @@ export function AddAddressModal({ show, onClose, form, setForm, onAdd }: Props) 
         />
 
         <div className="modalBtns">
-          <button className="saveBtn" onClick={onAdd}>Add</button>
+          <button className="saveBtn" onClick={handleAdd}>Add</button>
           <button className="cancelBtn" onClick={onClose}>Cancel</button>
         </div>
       </div>

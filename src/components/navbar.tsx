@@ -16,7 +16,6 @@ export default function NavBar() {
 
       <div className="navbar-right desktop-links">
         <ul className="nav-links">
-          <li><Link to="/search">Search</Link></li>
           <li><Link to="/cart">Cart</Link></li>
           <li><Link to="/account">Account</Link></li>
         </ul>

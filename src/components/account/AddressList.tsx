@@ -1,24 +1,24 @@
 // src/components/account/AddressList.tsx
 import React from "react";
-import type { Address } from "../../types/account";
+import type { Address } from "../../types/types";
 
 type Props = {
   addresses: Address[];
-  editingId: number | null;
+  editingIndex: number | null;
   editForm: { name: string; line1: string; line2: string };
   setEditForm: React.Dispatch<
     React.SetStateAction<{ name: string; line1: string; line2: string }>
   >;
-  startEdit: (addr: Address) => void;
+  startEdit: (addr: Address, index: number) => void;
   saveEdit: () => void;
   cancelEdit: () => void;
-  deleteAddress: (id: number) => void;
+  deleteAddress: (index: number) => void;
   onAddClick: () => void;
 };
 
 export function AddressList({
   addresses,
-  editingId,
+  editingIndex,
   editForm,
   setEditForm,
   startEdit,
@@ -29,9 +29,9 @@ export function AddressList({
 }: Props) {
   return (
     <div className="card">
-      {addresses.map((addr) => (
-        <div key={addr.id} className="addressBlock">
-          {editingId === addr.id ? (
+      {addresses.map((addr, index) => (
+        <div key={index} className="addressBlock">
+          {editingIndex === index ? (
             <div className="editArea">
               <input
                 className="editInput"
@@ -76,12 +76,12 @@ export function AddressList({
               </div>
 
               <div className="addressActions">
-                <button className="editBtn" onClick={() => startEdit(addr)}>
+                <button className="editBtn" onClick={() => startEdit(addr, index)}>
                   Edit
                 </button>
                 <button
                   className="deleteBtn"
-                  onClick={() => deleteAddress(addr.id)}
+                  onClick={() => deleteAddress(index)}
                 >
                   Delete
                 </button>

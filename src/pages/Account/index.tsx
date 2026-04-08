@@ -1,136 +1,194 @@
 import { useState } from "react";
 
-
 import "../../styles/global.css";
 import "../../styles/accountPage.css";
 
-import type { Address } from "../../types/account";
-
-import { initialAddresses, initialVehicles } from "../../data/account";
+import type { Address, Vehicle } from "../../types/types";
 
 import { ChangePasswordModal } from "../../components/account/ChangePasswordModal";
 import { ChangeEmailModal } from "../../components/account/ChangeEmailModal";
 import { AddAddressModal } from "../../components/account/AddAddressModal";
 import { AddVehicleModal } from "../../components/account/AddVehicleModal";
+import { EditVehicleModal } from "../../components/account/EditVehicleModal";
 
 import { AddressList } from "../../components/account/AddressList";
 import { VehicleList } from "../../components/account/VehicleList";
 import { AccountSettings } from "../../components/account/AccountSettings";
 
+import { useSavedVehicles } from "../../data/SavedVehiclesContext";
+import { useSavedAddresses } from "../../data/SavedAddressContext";
 
 export default function AccountPage() {
-  const [addresses, setAddresses] = useState(initialAddresses);
-  const [vehicles, setVehicles] = useState(initialVehicles);
+  const { savedVehicles, addVehicle, removeVehicle, updateVehicle } = useSavedVehicles();
+  const { savedAddresses, addAddress, updateAddress, removeAddress } = useSavedAddresses();
 
-  const [newsletter, setNewsletter] = useState("yes");
-  const [language, setLanguage] = useState("English");
+  const [editingVehicle, setEditingVehicle] = useState<Vehicle | null>(null);
+  const [vehicleForm, setVehicleForm] = useState({
+    year: "",
+    make: "",
+    model: "",
+    engine: ""
+  });
 
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const startEditVehicle = (v: Vehicle) => {
+    setEditingVehicle(v);
+    setVehicleForm({
+      year: v.year,
+      make: v.make,
+      model: v.model,
+      engine: v.engine
+    });
+  };
+
+  const saveVehicleEdit = () => {
+    if (!editingVehicle) return;
+    updateVehicle(editingVehicle.id, vehicleForm);
+    setEditingVehicle(null);
+  };
+
+  const handleAddVehicle = () => {
+    if (!vehicleForm.make.trim() || !vehicleForm.model.trim()) return;
+
+    addVehicle({
+      year: vehicleForm.year,
+      make: vehicleForm.make,
+      model: vehicleForm.model,
+      engine: vehicleForm.engine,
+    });
+
+    setVehicleForm({ year: "", make: "", model: "", engine: "" });
+    setShowAddVehicle(false);
+  };
+
+  const handleDeleteVehicle = (id: number) => {
+    removeVehicle(id);
+  };
+
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [editForm, setEditForm] = useState({ name: "", line1: "", line2: "" });
 
-  // Modal states
+  const [newAddress, setNewAddress] = useState({
+  name: "",
+  line1: "",
+  line2: ""
+});
+
+  
+  const startEditAddress = (addr: Address, index: number) => {
+    setEditingIndex(index);
+    setEditForm({
+      name: addr.name,
+      line1: addr.line1,
+      line2: addr.line2
+    });
+  };
+
+  const saveAddressEdit = () => {
+    if (editingIndex === null) return;
+
+    const id = savedAddresses[editingIndex].id;
+    updateAddress(id, editForm);
+
+    setEditingIndex(null);
+  };
+
+  const handleAddAddress = (newAddress: Omit<Address, "id">) => {
+    if (!newAddress.name.trim()) return;
+    addAddress(newAddress);
+    setShowAddAddress(false);
+  };
+
+  const handleDeleteAddress = (id: number) => {
+    removeAddress(id);
+  };
+
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [showAddVehicle, setShowAddVehicle] = useState(false);
-  
-  const [newAddress, setNewAddress] = useState({ name: "", line1: "", line2: "" });
-  const [newVehicle, setNewVehicle] = useState("");
+
   const [passwordForm, setPasswordForm] = useState({ current: "", new1: "", new2: "" });
   const [emailForm, setEmailForm] = useState({ current: "", new1: "" });
 
-  const startEdit = (addr: Address) => {
-    setEditingId(addr.id);
-    setEditForm({ name: addr.name, line1: addr.line1, line2: addr.line2 });
-  };
-
-  const saveEdit = () => {
-    setAddresses(addresses.map((a) => (a.id === editingId ? { ...a, ...editForm } : a)));
-    setEditingId(null);
-  };
-
-  const deleteAddress = (id: number) => setAddresses(addresses.filter((a) => a.id !== id));
-  const deleteVehicle = (id: number) => setVehicles(vehicles.filter((v) => v.id !== id));
-
-  const addAddress = () => {
-    if (!newAddress.name.trim()) return;
-    setAddresses([...addresses, { id: Date.now(), ...newAddress }]);
-    setNewAddress({ name: "", line1: "", line2: "" });
-    setShowAddAddress(false);
-  };
-
-  const addVehicle = () => {
-    if (!newVehicle.trim()) return;
-    setVehicles([...vehicles, { id: Date.now(), label: newVehicle }]);
-    setNewVehicle("");
-    setShowAddVehicle(false);
-  };
+  const [newsletter, setNewsletter] = useState("yes");
+  const [language, setLanguage] = useState("English");
 
   return (
-      <div className="account-page">
-        <main className="main">
-          <h2 className="sectionTitle">Account Settings</h2>
-          <AccountSettings
-              newsletter={newsletter}
-              setNewsletter={setNewsletter}
-              language={language}
-              setLanguage={setLanguage}
-              onPasswordClick={() => setShowPasswordModal(true)}
-              onEmailClick={() => setShowEmailModal(true)}
-            />
-
-            <h2 className="sectionTitle">Saved Addresses</h2>
-            <AddressList
-              addresses={addresses}
-              editingId={editingId}
-              editForm={editForm}
-              setEditForm={setEditForm}
-              startEdit={startEdit}
-              saveEdit={saveEdit}
-              cancelEdit={() => setEditingId(null)}
-              deleteAddress={deleteAddress}
-              onAddClick={() => setShowAddAddress(true)}
-            />
-
-            <h2 className="sectionTitle">Saved Vehicles</h2>
-            <VehicleList
-              vehicles={vehicles}
-              deleteVehicle={deleteVehicle}
-              onAddClick={() => setShowAddVehicle(true)}
-            />
-          </main>
-
-        <ChangePasswordModal
-          show={showPasswordModal}
-          onClose={() => setShowPasswordModal(false)}
-          form={passwordForm}
-          setForm={setPasswordForm}
-          onSave={() => { setShowPasswordModal(false);}}
+    <div className="account-page">
+      <main className="main">
+        <h2 className="sectionTitle">Account Settings</h2>
+        <AccountSettings
+          newsletter={newsletter}
+          setNewsletter={setNewsletter}
+          language={language}
+          setLanguage={setLanguage}
+          onPasswordClick={() => setShowPasswordModal(true)}
+          onEmailClick={() => setShowEmailModal(true)}
         />
 
-        <ChangeEmailModal
-          show={showEmailModal}
-          onClose={() => setShowEmailModal(false)}
-          form={emailForm}
-          setForm={setEmailForm}
-          onSave={() => {  setShowEmailModal(false);}}
+        <h2 className="sectionTitle">Saved Addresses</h2>
+        <AddressList
+          addresses={savedAddresses}
+          editingIndex={editingIndex}
+          editForm={editForm}
+          setEditForm={setEditForm}
+          startEdit={startEditAddress}
+          saveEdit={saveAddressEdit}
+          cancelEdit={() => setEditingIndex(null)}
+          deleteAddress={handleDeleteAddress}
+          onAddClick={() => setShowAddAddress(true)}
         />
 
-        <AddAddressModal
-          show={showAddAddress}
-          onClose={() => setShowAddAddress(false)}
-          form={newAddress}
-          setForm={setNewAddress}
-          onAdd={addAddress}
+        
+        <h2 className="sectionTitle">Saved Vehicles</h2>
+        <VehicleList
+          vehicles={savedVehicles}
+          deleteVehicle={handleDeleteVehicle}
+          onAddClick={() => setShowAddVehicle(true)}
+          onEditClick={startEditVehicle}
         />
+      </main>
 
-        <AddVehicleModal
-          show={showAddVehicle}
-          onClose={() => setShowAddVehicle(false)}
-          value={newVehicle}
-          setValue={setNewVehicle}
-          onAdd={addVehicle}
-        />
-</div>
-);
+      <ChangePasswordModal
+        show={showPasswordModal}
+        onClose={() => setShowPasswordModal(false)}
+        form={passwordForm}
+        setForm={setPasswordForm}
+        onSave={() => setShowPasswordModal(false)}
+      />
+
+      <ChangeEmailModal
+        show={showEmailModal}
+        onClose={() => setShowEmailModal(false)}
+        form={emailForm}
+        setForm={setEmailForm}
+        onSave={() => setShowEmailModal(false)}
+      />
+
+      <AddAddressModal
+        show={showAddAddress}
+        onClose={() => setShowAddAddress(false)}
+        form={newAddress}
+        setForm={setNewAddress}
+        onAdd={handleAddAddress}
+      />
+
+
+      <AddVehicleModal
+        show={showAddVehicle}
+        onClose={() => setShowAddVehicle(false)}
+        form={vehicleForm}
+        setForm={setVehicleForm}
+        onAdd={handleAddVehicle}
+      />
+
+      <EditVehicleModal
+        show={!!editingVehicle}
+        onClose={() => setEditingVehicle(null)}
+        form={vehicleForm}
+        setForm={setVehicleForm}
+        onSave={saveVehicleEdit}
+      />
+    </div>
+  );
 }
