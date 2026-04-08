@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { vehicleOptions } from "../../data/vehicle";
+import { vehicleOptions } from "../../data/vehicleOptions";
 import { searchCategories } from "../../data/searchCategories";
 import { products } from "../../data/parts";
 import { PartsResults } from "../../components/results";
