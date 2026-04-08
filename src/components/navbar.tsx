@@ -20,7 +20,7 @@ export default function NavBar() {
       <div className="navbar-right desktop-links">
         <ul className="nav-links">
           <li>
-            <Link to="/cart" className="nav-cart-link">
+            <Link to="/cart" className="nav-cart-link">Cart 
               <svg
                 className="nav-cart-icon"
                 viewBox="0 0 24 24"
@@ -34,9 +34,11 @@ export default function NavBar() {
                 <circle cx="20" cy="21" r="1" />
                 <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
               </svg>
+              
               {totalItems > 0 && (
                 <span className="nav-cart-badge">{totalItems}</span>
               )}
+              
             </Link>
           </li>
           <li><Link to="/account">Account</Link></li>
