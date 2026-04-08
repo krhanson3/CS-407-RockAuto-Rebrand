@@ -142,6 +142,20 @@
   transform: scale(1.05);
 }
 
+.cart-product-thumb-img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #f4f5ff;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.cart-product-thumb-img:hover {
+  transform: scale(1.05);
+}
+
 .cart-product-thumb svg {
   width: 28px;
   height: 28px;
@@ -385,6 +399,8 @@
   letter-spacing: 0.3px;
   position: relative;
   overflow: hidden;
+  text-decoration: none;
+  box-sizing: border-box;
 }
 
 .cart-checkout-btn::before {

@@ -4,6 +4,7 @@ import SearchByVehicle from "../pages/SearchByVehicle";
 import SearchByPart from "../pages/SearchByPart";
 import Account from "../pages/Account";
 import Cart from "../pages/Cart";
+import Checkout from "../pages/Checkout";
 
 export default function AppRouter() {
   return (
@@ -13,6 +14,7 @@ export default function AppRouter() {
       <Route path="/search-by-part" element={<SearchByPart />} />
       <Route path="/account" element={<Account />} />
       <Route path="/cart" element={<Cart />} />
+      <Route path="/checkout" element={<Checkout />} />
     </Routes>
   );
 }
