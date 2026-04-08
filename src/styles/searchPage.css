@@ -214,24 +214,25 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  text-align: center;
-  font-size: 14px;
-  color: #6c6c8a;
-  font-weight: 600;
 }
 
 .search-results-placeholder.has-products {
-  display: block;
-  text-align: left;
-  color: inherit;
-  font-weight: 400;
+  padding: 16px;         
+  min-height: auto;      
+  display: block;        
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  background: rgba(255, 255, 255, 0.78);      
+  box-shadow:
+    0 4px 24px rgba(99, 102, 241, 0.07),
+    0 1.5px 6px rgba(0, 0, 0, 0.04);
 }
+
 
 .search-products {
   width: 100%;
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 }
 
 .search-product-card {
@@ -315,3 +316,15 @@
     width: 100%;
   }
 }
+
+.search-results.part-mode {
+  grid-template-columns: 1fr !important;
+  column-gap: 0 !important;
+}
+
+.search-results.part-mode aside {
+  display: none;
+  height: 100%;
+}
+
+

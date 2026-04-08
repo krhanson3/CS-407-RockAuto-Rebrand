@@ -1,7 +1,7 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import "../../styles/global.css"
+import "../../styles/global.css";
 import "../../styles/cartPage.css";
+import { useCart } from "../../data/CartContext";
 
 /* ── Inline SVG icons ── */
 const CartIcon = () => (
@@ -13,50 +13,33 @@ const CartIcon = () => (
 
 const TruckIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="1" y="3" width="15" height="13" /><polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-    <circle cx="5.5" cy="18.5" r="2.5" /><circle cx="18.5" cy="18.5" r="2.5" />
+    <rect x="1" y="3" width="15" height="13" />
+    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+    <circle cx="5.5" cy="18.5" r="2.5" />
+    <circle cx="18.5" cy="18.5" r="2.5" />
   </svg>
 );
 
 const LockIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
   </svg>
 );
 
-/* ── Dummy data ── */
-interface CartItem {
-  id: number;
-  name: string;
-  brand: string;
-  partNumber: string;
-  price: number;
-  qty: number;
-}
-
-const initialItems: CartItem[] = [
-  { id: 1, name: "Ceramic Disc Brake Pad Set", brand: "GM", partNumber: "19428008", price: 45.99, qty: 1 },
-  { id: 2, name: "Engine Oil Filter", brand: "A-Premium", partNumber: "APEOF042", price: 23.99, qty: 1 },
-  { id: 3, name: "Iridium Spark Plug", brand: "Denso", partNumber: "3273", price: 10.99, qty: 1 },
-];
+const toPriceNumber = (price: string): number => {
+  // Remove anything that isn't a digit or a dot
+  const cleaned = price.replace(/[^0-9.]/g, "");
+  const value = parseFloat(cleaned);
+  return isNaN(value) ? 0 : value;
+};
 
 export default function Cart() {
-  const [items, setItems] = useState<CartItem[]>(initialItems);
+  const { cart, removeFromCart, updateQuantity } = useCart();
 
-  const updateQty = (id: number, delta: number) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item
-      )
-    );
-  };
-
-  const removeItem = (id: number) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const subtotal = items.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const shipping = items.length > 0 ? 8.99 : 0;
+  // Convert price strings → numbers
+  const subtotal = cart.reduce((sum, i) => sum + toPriceNumber(i.price) * i.quantity,0);
+  const shipping = cart.length > 0 ? 8.99 : 0;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
 
@@ -71,10 +54,13 @@ export default function Cart() {
 
       {/* Page Title */}
       <h1 className="cart-title">
-        Your Shopping Cart <span className="cart-count">({items.length} {items.length === 1 ? "item" : "items"})</span>
+        Your Shopping Cart{" "}
+        <span className="cart-count">
+          ({cart.length} {cart.length === 1 ? "item" : "items"})
+        </span>
       </h1>
 
-      {items.length === 0 ? (
+      {cart.length === 0 ? (
         /* ── Empty State ── */
         <div className="cart-empty">
           <div className="cart-empty-icon">
@@ -103,54 +89,60 @@ export default function Cart() {
                   </tr>
                 </thead>
                 <tbody>
-                  {items.map((item) => (
-                    <tr key={item.id}>
+                  {cart.map((item) => (
+                    <tr key={item.partNumber}>
                       <td>
                         <div className="cart-product-cell">
-                         
                           <div className="cart-product-info">
                             <div className="product-name">{item.name}</div>
                             <div className="product-brand">{item.brand}</div>
                           </div>
                         </div>
                       </td>
+
                       <td>
                         <span className="cart-part-num">{item.partNumber}</span>
                       </td>
+
                       <td>
-                        <span className="cart-price">${item.price.toFixed(2)}</span>
+                        <span className="cart-price">
+                          ${toPriceNumber(item.price).toFixed(2)}
+                        </span>
                       </td>
+
                       <td>
                         <div className="cart-qty-controls">
                           <button
                             className="cart-qty-btn"
-                            onClick={() => updateQty(item.id, -1)}
-                            aria-label="Decrease quantity"
+                            onClick={() => updateQuantity(item.partNumber, -1)}
                           >
                             −
                           </button>
+
                           <input
                             className="cart-qty-value"
                             type="text"
-                            value={item.qty}
+                            value={item.quantity}
                             readOnly
                           />
+
                           <button
                             className="cart-qty-btn"
-                            onClick={() => updateQty(item.id, 1)}
-                            aria-label="Increase quantity"
+                            onClick={() => updateQuantity(item.partNumber, 1)}
                           >
                             +
                           </button>
                         </div>
                       </td>
+
                       <td className="cart-item-total-cell">
                         <div className="cart-item-total">
-                          ${(item.price * item.qty).toFixed(2)}
+                          ${(toPriceNumber(item.price) * item.quantity).toFixed(2)}
                         </div>
+
                         <button
                           className="cart-remove-btn"
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => removeFromCart(item.partNumber)}
                         >
                           Remove
                         </button>
@@ -160,10 +152,6 @@ export default function Cart() {
                 </tbody>
               </table>
             </div>
-
-            <Link to="/" className="cart-continue">
-              <span className="arrow-icon">←</span> Continue Shopping
-            </Link>
           </div>
 
           {/* Right — Sidebar */}
@@ -175,10 +163,12 @@ export default function Cart() {
                 <span className="cart-summary-label">Subtotal</span>
                 <span className="cart-summary-value">${subtotal.toFixed(2)}</span>
               </div>
+
               <div className="cart-summary-row">
                 <span className="cart-summary-label">Shipping</span>
                 <span className="cart-summary-value">${shipping.toFixed(2)}</span>
               </div>
+
               <div className="cart-summary-row">
                 <span className="cart-summary-label">Estimated Tax</span>
                 <span className="cart-summary-value">${tax.toFixed(2)}</span>
@@ -195,15 +185,13 @@ export default function Cart() {
                 <LockIcon />
                 Proceed to Checkout
               </button>
-
-              
             </div>
           </div>
         </div>
       )}
 
       {/* ── Shipping Information ── */}
-      {items.length > 0 && (
+      {cart.length > 0 && (
         <div className="cart-shipping-card">
           <h2 className="cart-shipping-title">
             <TruckIcon />
@@ -215,18 +203,22 @@ export default function Cart() {
               <label htmlFor="ship-first">First Name</label>
               <input id="ship-first" className="cart-input" type="text" placeholder="John" />
             </div>
+
             <div className="cart-input-group">
               <label htmlFor="ship-last">Last Name</label>
               <input id="ship-last" className="cart-input" type="text" placeholder="Doe" />
             </div>
+
             <div className="cart-input-group full-width">
               <label htmlFor="ship-address">Address</label>
               <input id="ship-address" className="cart-input" type="text" placeholder="123 Main Street" />
             </div>
+
             <div className="cart-input-group">
               <label htmlFor="ship-city">City</label>
               <input id="ship-city" className="cart-input" type="text" placeholder="Springfield" />
             </div>
+
             <div className="cart-input-group">
               <label htmlFor="ship-state">State</label>
               <select id="ship-state" className="cart-select" defaultValue="">
@@ -246,6 +238,7 @@ export default function Cart() {
                 <option>WI</option><option>WY</option>
               </select>
             </div>
+
             <div className="cart-input-group">
               <label htmlFor="ship-zip">ZIP Code</label>
               <input id="ship-zip" className="cart-input" type="text" placeholder="62704" />

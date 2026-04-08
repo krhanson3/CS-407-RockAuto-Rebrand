@@ -2,21 +2,11 @@ import { useState } from "react";
 import { vehicleOptions } from "../../data/vehicle";
 import { searchCategories } from "../../data/searchCategories";
 import { products } from "../../data/parts";
+import { PartsResults } from "../../components/results";
 
 import "../../styles/global.css";
 import "../../styles/searchPage.css";
-import tricoWiper from "../../images/parts/TRICO_wiper.jpg";
-import ancoWiper from "../../images/parts/ANCO_wiper.jpg";
-import boschWiper from "../../images/parts/bosch_wiper.png"
-import rainxWiper from "../../images/parts/rainx_wiper.png"
 import Breadcrumb from "../../components/breadcrumb";
-
-const productImages: Record<string, string> = {
-  tricoWiper,
-  ancoWiper,
-  boschWiper,
-  rainxWiper,
-};
 
 export default function Search() {
   const [make, setMake] = useState("none");
@@ -44,50 +34,46 @@ export default function Search() {
     v.year === year &&
     v.engine === engine
   );
-
   setShowResults(match);
   setSelectedCategory(null);
 };
-
 
   return (
     <div className="search-page">
       <h1 className="search-title">
         <span className="search-title-line">ALL THE PARTS YOUR</span>
         <span className="search-title-line">CAR WILL EVER NEED</span>
-        
       </h1>
-
       <main className={`search-main${showResults ? " search-main--results" : ""}`}>
-        <Breadcrumb />
+      
         {showResults ? (
           <section className="search-results">
-            
-
             <aside className="search-filter-card">
+              <Breadcrumb />
               <h2 className="search-filter-title">Filter by Category</h2>
-              <ul className="search-filter-list">
-                {searchCategories.map((category) => (
-                  <li key={category}>
-                    <button
-                      className={`search-filter-btn${
-                        selectedCategory === category ? " is-active" : ""
-                      }`}
-                      type="button"
-                      onClick={() => setSelectedCategory(category)}
-                    >
-                      {category}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+                <ul className="search-filter-list">
+                  {searchCategories.map((category) => (
+                    <li key={category}>
+                      <button
+                        className={`search-filter-btn${
+                          selectedCategory === category ? " is-active" : ""
+                        }`}
+                        type="button"
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        {category}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
             </aside>
-
-           <PartsResults results={products[selectedCategory] || []} />
-
+            
+            <PartsResults
+              results={ selectedCategory !== null && products[selectedCategory]
+                  ? products[selectedCategory]: [] }
+            />
           </section>
-        ) : (
-          
+          ) : (
           <div className="search-card">
             <Breadcrumb />
             <div className="search-grid">
@@ -144,9 +130,7 @@ export default function Search() {
                   disabled={model === "none"}
                 >
                   <option value="none">None</option>
-                  {years.map((y) => (
-                    <option key={y} value={y}>{y}</option>
-                  ))}
+                  {years.map((y) => (<option key={y} value={y}>{y}</option>))}
                 </select>
               </div>
 
@@ -165,7 +149,6 @@ export default function Search() {
                   ))}
                 </select>
               </div>
-
             </div>
 
             <button className="search-parts-btn" type="button" onClick={handleSearch}>

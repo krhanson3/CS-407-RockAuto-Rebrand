@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { products } from "../../data/parts";   // ← correct path
+import { products } from "../../data/parts";
 import type { Part } from "../../types/types";
 import Breadcrumb from "../../components/breadcrumb";
+import { PartsResults } from "../../components/results";
+
+import "../../styles/searchPage.css"
 
 export default function SearchByPartPage() {
   const [partSearch, setPartSearch] = useState("");
-  const [results, setResults] = useState<Part[]>([]);
+  const [results, setResults] = useState<Part[] | null>(null);
 
   const handleSearch = () => {
     const allParts: Part[] = Object.values(products).flat();
@@ -18,33 +21,42 @@ export default function SearchByPartPage() {
   };
 
   return (
-    <div className="part-search-page">
-      <Breadcrumb />
-      <h2>Part Number</h2>
-
-      <div className="part-search-box">
-        <input
-          type="text"
-          placeholder="Enter part number..."
-          value={partSearch}
-          onChange={(e) => setPartSearch(e.target.value)}
-        />
-        <button onClick={handleSearch}>Search</button>
-      </div>
-
-      <div className="part-results">
-        {results.length > 0 ? (
-          results.map((item) => (
-            <div key={item.partNumber} className="part-card">
-              <h3>{item.brand} — {item.name}</h3>
-              <p>Part #{item.partNumber}</p>
-              <p>{item.price}</p>
+    <div className="search-page">
+      <h1 className="search-title">
+        <span className="search-title-line">ALL THE PARTS YOUR</span>
+        <span className="search-title-line">CAR WILL EVER NEED</span>
+      </h1>
+      <main className="search-main">
+        <div className="search-card">
+          <div className="search-grid">
+            <Breadcrumb />
+            <div className="search-input-group">
+              <label htmlFor="part-search">Part Number</label>
+              <input
+                id="part-search"
+                type="text"
+                className="search-select"
+                placeholder="Enter part number..."
+                value={partSearch}
+                onChange={(e) => setPartSearch(e.target.value)}
+              />
             </div>
-          ))
-        ) : (
-          <p>Enter a part number to begin</p>
+          </div>
+
+          <button className="search-parts-btn" type="button" onClick={handleSearch}>
+            Search Parts
+          </button>
+        </div>
+
+        {results !== null && (
+          <section className="search-results part-mode">
+            {/* Empty sidebar to preserve layout */}
+            <aside></aside>
+
+            <PartsResults results={results} />
+          </section>
         )}
-      </div>
+      </main>
     </div>
   );
 }
