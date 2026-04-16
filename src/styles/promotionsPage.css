@@ -1,0 +1,110 @@
+/* Page background + layout (matches home-page) */
+.promotions-page {
+    background: #e8eafc;
+    min-height: 100vh;
+    padding: 32px;
+    display: flex;
+    justify-content: center;
+    color: #1a1a2e;
+}
+
+.promotions-main {
+    max-width: 900px;
+    width: 100%;
+}
+
+/* Title styling (matches home-title) */
+.promotions-title {
+    font-size: 48px;
+    font-weight: 900;
+    margin: 6px 0 34px;
+    padding-bottom: 20px;
+    color: #1a1a2e;
+    letter-spacing: -0.5px;
+    line-height: 1.05;
+    text-align: center;
+}
+
+.title-line {
+    display: block;
+}
+
+/* Grid layout for cards */
+.promotions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* Card styling (matches home-card) */
+.promotion-card {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow:
+        0 4px 24px rgba(99, 102, 241, 0.07),
+        0 1.5px 6px rgba(0, 0, 0, 0.04);
+    transition: transform 0.15s ease;
+    animation: promoFadeIn 0.4s ease-out both;
+}
+
+.promotion-card:hover {
+    transform: translateY(-4px);
+}
+
+/* Image styling */
+.promotion-image {
+    width: 100%;
+    height: 160px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+}
+
+/* Text styling */
+.promotion-info {
+    text-align: center;
+}
+
+.promotion-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.promotion-expiration {
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+.promotion-discount {
+    margin-top: 0.5rem;
+    font-weight: 800;
+    color: #6a2ff9; /* purple accent */
+}
+
+/* Fade animation (matches homeFadeIn) */
+@keyframes promoFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 700px) {
+    .promotions-title {
+        font-size: 34px;
+    }
+
+    .promotions-page {
+        padding: 20px 16px 48px;
+    }
+}

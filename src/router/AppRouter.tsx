@@ -5,6 +5,8 @@ import SearchByPart from "../pages/SearchByPart";
 import Account from "../pages/Account";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
+import PromotionsPage from "../pages/Promotions";
+
 
 export default function AppRouter() {
   return (
@@ -15,6 +17,7 @@ export default function AppRouter() {
       <Route path="/account" element={<Account />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/checkout" element={<Checkout />} />
+      <Route path="/promotions" element={<PromotionsPage />} />
     </Routes>
   );
 }

@@ -23,3 +23,10 @@ export type Part = {
     price: string;
     image: string; 
 }
+
+export type Promotion ={
+    name: string; 
+    expiration: string; 
+    discount: number; 
+    image: string; 
+}
