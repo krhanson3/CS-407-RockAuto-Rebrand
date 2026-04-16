@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import type { Part } from "../types/types";
+import type { Part } from "../../types/types";
 
 type CartItem = Part & { quantity: number };
 

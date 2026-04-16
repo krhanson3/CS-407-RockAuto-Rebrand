@@ -1,5 +1,5 @@
 import type { Part } from "../types/types";
-import { useCart } from "../data/CartContext";
+import { useCart } from "../data/contexts/CartContext";
 
 import tricoWiper from "../images/parts/TRICO_wiper.jpg";
 import ancoWiper from "../images/parts/ANCO_wiper.jpg";

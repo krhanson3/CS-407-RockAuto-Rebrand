@@ -15,8 +15,8 @@ import { AddressList } from "../../components/account/AddressList";
 import { VehicleList } from "../../components/account/VehicleList";
 import { AccountSettings } from "../../components/account/AccountSettings";
 
-import { useSavedVehicles } from "../../data/SavedVehiclesContext";
-import { useSavedAddresses } from "../../data/SavedAddressContext";
+import { useSavedVehicles } from "../../data/contexts/SavedVehiclesContext";
+import { useSavedAddresses } from "../../data/contexts/SavedAddressContext";
 
 export default function AccountPage() {
   const { savedVehicles, addVehicle, removeVehicle, updateVehicle } = useSavedVehicles();
