@@ -16,11 +16,11 @@ export default function HomePage() {
           <div className="welcome-message">
               <span className="welcome-message-title">Finding Parts:</span>
                 <span className="welcome-message-message">
-                  Start your search by entering your vehicle information or by entering a specific part number
+                  Start your Search by entering your Vehicle Information or by entering a specific Part Number
                 </span>
               <span className="welcome-message-title">Placing an Order:</span>
               <span className="welcome-message-message">
-                  Add items to your cart, enter shipping and payment information, then review your Order
+                  Add items to your Cart, enter Shipping and Payment information, then review your Order
               </span>
               <span className="welcome-message-title">Existing Orders:</span>
               <span className="welcome-message-message">
