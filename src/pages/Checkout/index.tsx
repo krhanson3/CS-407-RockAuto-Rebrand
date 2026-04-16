@@ -2,9 +2,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../../styles/global.css";
 import "../../styles/checkoutPage.css";
-import { useCart } from "../../data/CartContext";
-import { useSavedAddresses } from "../../data/SavedAddressContext";
+import { useCart } from "../../data/contexts/CartContext";
+import { useOrders } from "../../data/contexts/OrderContext";
+import { useSavedAddresses } from "../../data/contexts/SavedAddressContext";
 import Breadcrumb from "../../components/breadcrumb";
+import type { Order } from "../../types/types";
+
 
 import tricoWiper from "../../images/parts/TRICO_wiper.jpg";
 import ancoWiper from "../../images/parts/ANCO_wiper.jpg";
@@ -24,14 +27,18 @@ const toPriceNumber = (price: string): number => {
   return isNaN(value) ? 0 : value;
 };
 
+
 export default function Checkout() {
+  const { addOrder } = useOrders();
   const { cart, removeFromCart } = useCart();
   const { savedAddresses } = useSavedAddresses();
+  
   const subtotal = cart.reduce((sum, i) => sum + toPriceNumber(i.price) * i.quantity, 0);
   const shipping = cart.length > 0 ? 8.99 : 0;
   const tax = subtotal * 0.08;
   const total = subtotal + shipping + tax;
 
+  const [placedOrderId, setPlacedOrderId] = useState<string | null>(null);
   const [step, setStep] = useState<"shipping" | "payment" | "confirm" | "success">("shipping");
 
   const [shippingForm, setShippingForm] = useState({
@@ -65,7 +72,27 @@ export default function Checkout() {
   };
 
   const handlePlaceOrder = () => {
+    const orderId = `RA-${Date.now().toString().slice(-8)}`;
+
+    const newOrder: Order = {
+      id: orderId,
+      date: new Date().toLocaleDateString(),
+      total,
+      status: "Processing",
+      items: cart.map(item => ({
+        name: item.name,
+        quantity: item.quantity
+        })
+      )
+    };
+
+
+    addOrder(newOrder); 
+    setPlacedOrderId(orderId);  
+
     setStep("success");
+
+    // Clear cart after saving order
     setTimeout(() => {
       cart.forEach((item) => removeFromCart(item.partNumber));
     }, 100);
@@ -102,7 +129,7 @@ export default function Checkout() {
           <p className="checkout-success-detail">A confirmation email will be sent to <strong>{paymentForm.email}</strong></p>
           <div className="checkout-success-order">
             <span>Order #</span>
-            <span className="checkout-order-id">RA-{Date.now().toString().slice(-8)}</span>
+            <span className="checkout-order-id">{placedOrderId}</span>
           </div>
           <Link to="/" className="checkout-back-btn">← Continue Shopping</Link>
         </div>

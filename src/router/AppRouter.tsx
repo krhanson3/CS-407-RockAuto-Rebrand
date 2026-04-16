@@ -6,6 +6,7 @@ import Account from "../pages/Account";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
 import PromotionsPage from "../pages/Promotions";
+import OrderStatus from "../pages/OrderStatus";
 
 
 export default function AppRouter() {
@@ -18,6 +19,7 @@ export default function AppRouter() {
       <Route path="/cart" element={<Cart />} />
       <Route path="/checkout" element={<Checkout />} />
       <Route path="/promotions" element={<PromotionsPage />} />
+      <Route path="/order-status" element={<OrderStatus />} /> 
     </Routes>
   );
 }

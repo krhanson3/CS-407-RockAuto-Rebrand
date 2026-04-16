@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/navbar.css";
 import RockAutoLogo from "../images/RockAutoLogo.png";
-import { useCart } from "../data/CartContext";
+import { useCart } from "../data/contexts/CartContext";
 
 export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -42,6 +42,7 @@ export default function NavBar() {
               
             </Link>
           </li>
+          <li><Link to="/order-status">Order Status</Link></li>
           <li><Link to="/account">Account</Link></li>
         </ul>
       </div>

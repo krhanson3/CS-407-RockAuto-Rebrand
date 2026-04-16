@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import "../../styles/global.css";
 import "../../styles/cartPage.css";
-import { useCart } from "../../data/CartContext";
+import { useCart } from "../../data/contexts/CartContext";
 import Breadcrumb from "../../components/breadcrumb";
 
 import tricoWiper from "../../images/parts/TRICO_wiper.jpg";
