@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import type { Address } from "../types/types";
+import type { Address } from "../../types/types";
 
 type SavedAddressContextType = {
   savedAddresses: Address[];
